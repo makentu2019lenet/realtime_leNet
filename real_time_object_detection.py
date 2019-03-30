@@ -41,38 +41,26 @@ fps = FPS().start()
 
 # loop over the frames from the video stream
 while True:
-	   # grab the frame from the threaded video stream and resize it
-	   # to have a maximum width of 400 pixels
-	   frame = vs.read()
-	   frame = imutils.resize(frame, width=400)
-	   # grab the frame dimensions and convert it to a blob
-	   # google net just only work in 224*224
-	   (h, w) = frame.shape[:2]
-	   blob = cv2.dnn.blobFromImage(frame,1, (224, 224), (104, 117, 123))
-	   # pass the blob through the network and obtain the detections and
-	   # predictions
-	   # the output predicted probabilities for each of the 1,000 ImageNet
-       # classes
-	   net.setInput(blob)
-	   preds = net.forward()
-           idxs = np.argsort(preds[0])[::-1][:5]
-	   for (i, idx) in enumerate(idxs):
-	   # draw the top prediction on the input image
-	       if i == 0:
-		    text = "Label: {}, {:.2f}%".format(CLASSES[idx],preds[0][idx] * 100)
-		    cv2.putText(frame, text, (5, 25),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0, 0, 255),2)
-		    print("[INFO] {}. label: {}, probability: {:.5}".format(i + 1,CLASSES[idx], preds[0][idx]))
+	# grab the frame from the threaded video stream and resize it
+	# to have a maximum width of 400 pixels
+	frame = vs.read()
+	frame = imutils.resize(frame, width=400)
 
-
-
+	# grab the frame dimensions and convert it to a blob
+	#(h, w) = frame.shape[:2]
+	blob = cv2.dnn.blobFromImage(frame, 1, (224, 224), (104, 117, 123))
+	# pass the blob through the network and obtain the detections and
+	# predictions
+	net.setInput(blob)
+	preds = net.forward()
+	idxs = np.argsort(preds[0])[::-1][:5]
+	# loop over the detections
+	for (i, idx) in enumerate(idxs):
+		# extract the confidence (i.e., probability) associated with
+		# the prediction
+		if i == 0:
+			text = "Label: {}, {:.2f}%".format(CLASSES[idx],preds[0][idx] * 100)
+			#cv2.putText(frame, text, (5, 25),  cv2.FONT_HERSHEY_SIMPLEX,0.7, (0, 0,255),2)
+			print("[INFO] {}. label: {}, probability: {:.5}".format(i + 1,CLASSES[idx], preds[0][idx]))
 	# update the FPS counter
-	       fps.update()
-
-# stop the timer and display FPS information
-fps.stop()
-print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-
-# do a bit of cleanup
-cv2.destroyAllWindows()
-vs.stop()
+		fps.update()
