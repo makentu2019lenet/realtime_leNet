@@ -170,9 +170,9 @@ void serialEvent() {
     }
 
     int r = Serial.read() - '0'; // converting the character into integer
-    if(r==1) servo.write(20) ;
-    if(r==2) servo.write(85) ;
-    if(r==3) servo.write(150) ;
+    if(r==1) servo_demo.write(20) ;
+    if(r==2) servo_demo.write(85) ;
+    if(r==3) servo_demo.write(150) ;
   }
 
 }
